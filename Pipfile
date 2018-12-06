@@ -13,6 +13,7 @@ graphene-django = "*"
 django-modern-rpc = "*"
 json-rpc = "*"
 jsonrpcclient = {extras = ["requests"], version = "*"}
+gunicorn = "*"
 
 [dev-packages]
 
