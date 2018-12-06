@@ -13,12 +13,16 @@
                     <button class="btn btn-outline-secondary bg-primary text-white" type="submit">Shorten!</button>
                 </div>
             </div>
+            {% if errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ errors }}
+                </div>
+            {% endif %}
         </form>
     </div>
     {% if url_list %}
         <div class="row">
             <table class="table table-striped">
-                <caption>List of URLs</caption>
                 <thead class="thead-light">
                 <tr>
                     <th>Long Url</th>
@@ -31,11 +35,15 @@
                 {% for url_item in url_list %}
                     <tr class="{% if url_item.pk == current %}success{% endif %}">
                         <td>
-                            <a class="d-inline-block text-truncate" style="max-width: 150px;" href="{{ url_item.url }}">{{ url_item.url }}</a>
+                            <a class="d-inline-block text-truncate" style="max-width: 150px;"
+                               href="{{ url_item.url }}">{{ url_item.url }}</a>
                         </td>
                         <td>{{ url_item.creation_time }}</td>
                         <td>
-                            <a href="{% url 'urls-shortcut' token=url_item.token %}">http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}{% url 'urls-shortcut' token=url_item.token %}</a>
+                            <a href="{% url 'urls-shortcut' token=url_item.token %}">
+                                http{% if request.is_secure %}s{% endif %}
+                                ://{{ request.get_host }}{% url 'urls-shortcut' token=url_item.token %}
+                            </a>
                         </td>
                         <td>{{ url_item.redirect_count }}</td>
                     </tr>

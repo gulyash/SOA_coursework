@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from url_shortener.models import Url
-from url_shortener.tokenizer import Tokenizer
+from url_shortener.tokenizer import Tokenizer, InvalidUrlException
 
 
 class UrlsView(APIView):
@@ -14,9 +14,16 @@ class UrlsView(APIView):
         return Response({'urls': list(Url.objects.all().order_by('-creation_time').values())})
 
     def post(self, request, *args, **kwargs):
-        token = Tokenizer().create_token(request.data['url'])
+        token = None
+        errors = None
+        try:
+            token = Tokenizer().create_token(request.data['url'])
+        except InvalidUrlException as e:
+            errors = e.args[0]
+
         return Response(json.dumps({
             'token': token,
+            'errors': errors,
         }))
 
 
@@ -37,6 +44,10 @@ class HomePageView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         url = request.POST['url']
-        if url:
+        url_list = Url.objects.order_by('-id')
+        context = {'url_list': url_list}
+        try:
             token = Tokenizer().create_token(url)
-        return redirect('home')
+        except InvalidUrlException as e:
+            context['errors'] = e.args[0]
+        return render(request, 'home.html', context)

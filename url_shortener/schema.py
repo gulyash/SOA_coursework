@@ -3,7 +3,7 @@ from graphene import Node, ObjectType, Schema
 from graphene_django import DjangoObjectType, DjangoConnectionField
 
 from url_shortener.models import Url
-from url_shortener.tokenizer import Tokenizer
+from url_shortener.tokenizer import Tokenizer, InvalidUrlException
 
 # create token query example:
 get_token = """
@@ -49,7 +49,10 @@ class GetToken(graphene.Mutation):
     token = graphene.String()
 
     def mutate(self, info, url):
-        token = Tokenizer().create_token(url)
+        try:
+            token = Tokenizer().create_token(url)
+        except InvalidUrlException as e:
+            token = e.args[0]
         return GetToken(token=token)
 
 
