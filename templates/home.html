@@ -17,8 +17,9 @@
     </div>
     {% if url_list %}
         <div class="row">
-            <table class="table">
-                <thead>
+            <table class="table table-striped">
+                <caption>List of URLs</caption>
+                <thead class="thead-light">
                 <tr>
                     <th>Long Url</th>
                     <th>Created</th>
@@ -30,7 +31,7 @@
                 {% for url_item in url_list %}
                     <tr class="{% if url_item.pk == current %}success{% endif %}">
                         <td>
-                            <a href="{{ url_item.url }}">{{ url_item.url }}</a>
+                            <a class="d-inline-block text-truncate" style="max-width: 150px;" href="{{ url_item.url }}">{{ url_item.url }}</a>
                         </td>
                         <td>{{ url_item.creation_time }}</td>
                         <td>
