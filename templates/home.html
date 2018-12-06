@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="my-5">
+        <h1>Do it!</h1>
+        <form method="post" action="/">
+            {% csrf_token %}
+            <div class="input-group input-group-lg mb-3">
+                <input type="text" class="form-control" placeholder="http://too-long-url-you-want-to-shorten.com"
+                       aria-label="URL"
+                       aria-describedby="basic-addon2"
+                       name="url">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary bg-primary text-white" type="submit">Shorten!</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if url_list %}
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Long Url</th>
+                    <th>Created</th>
+                    <th>Short Url</th>
+                    <th>Clicks</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for url_item in url_list %}
+                    <tr class="{% if url_item.pk == current %}success{% endif %}">
+                        <td>
+                            <a href="{{ url_item.url }}">{{ url_item.url }}</a>
+                        </td>
+                        <td>{{ url_item.creation_time }}</td>
+                        <td>
+                            <a href="{% url 'urls-shortcut' token=url_item.token %}">http{% if request.is_secure %}
+                                s{% endif %}://{{ request.get_host }}{% url 'urls-shortcut' token=url_item.token %}</a>
+                        </td>
+                        <td>{{ url_item.redirect_count }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="row">
+            <p>No urls are available yet.</p>
+        </div>
+    {% endif %}
+{% endblock %}
