@@ -5,7 +5,8 @@ from url_shortener.models import Url
 
 
 class UrlAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('url', )
+    search_fields = ('url', )
 
 
 admin.site.register(Url, UrlAdmin)
